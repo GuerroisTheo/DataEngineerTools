@@ -8,6 +8,6 @@
 from itemadapter import ItemAdapter
 
 
-class YtmusicPipeline:
+class BillboardPipeline:
     def process_item(self, item, spider):
         return item

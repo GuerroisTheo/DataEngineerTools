@@ -1,0 +1,44 @@
+def generate_data(documents):
+    for docu in documents:
+        yield {
+            "_index": "nom_du_nouveau_index",
+            "_type": "nom_du_nouveau_index",
+            "_source": {k:v if v else None for k,v in docu.items()},
+        }
+
+document = df.fillna("").to_dict(orient="records")
+
+bulk(es_client, generate_data(document))
+
+def search_singer(singer):
+    QUERY = {
+      "query": {
+        "term" : { 
+            "artist" : singer.lower()} 
+      }
+    }
+    result = es_client.search(index="nom_du_nouveau_index", body=QUERY)
+    print(result)
+    return [elt['_source']['title'] for elt in result["hits"]["hits"]]
+
+def search_title(title):
+    QUERY = {
+      "query": {
+        "term" : { 
+            "title" : title.lower()} 
+      }
+    }
+    result = es_client.search(index="nom_du_nouveau_index", body=QUERY)
+    print(result)
+    return [elt['_source']['title'] for elt in result["hits"]["hits"]]
+
+def search_lyrics(lyrics):
+    QUERY = {
+      "query": {
+        "term" : { 
+            "lyrics" : lyrics.lower()} 
+      }
+    }
+    result = es_client.search(index="nom_du_nouveau_index", body=QUERY)
+    print(result)
+    return [elt['_source']['title'] for elt in result["hits"]["hits"]]

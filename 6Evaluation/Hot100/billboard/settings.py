@@ -1,4 +1,4 @@
-# Scrapy settings for ytmusic project
+# Scrapy settings for billboard project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,14 +7,14 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'ytmusic'
+BOT_NAME = 'billboard'
 
-SPIDER_MODULES = ['ytmusic.spiders']
-NEWSPIDER_MODULE = 'ytmusic.spiders'
+SPIDER_MODULES = ['billboard.spiders']
+NEWSPIDER_MODULE = 'billboard.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'ytmusic (+http://www.yourdomain.com)'
+#USER_AGENT = 'billboard (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -45,13 +45,13 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'ytmusic.middlewares.YtmusicSpiderMiddleware': 543,
+#    'billboard.middlewares.BillboardSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'ytmusic.middlewares.YtmusicDownloaderMiddleware': 543,
+#    'billboard.middlewares.BillboardDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -63,7 +63,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    'ytmusic.pipelines.YtmusicPipeline': 300,
+#    'billboard.pipelines.BillboardPipeline': 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
