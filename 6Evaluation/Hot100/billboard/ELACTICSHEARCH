@@ -1,14 +1,28 @@
+from elasticsearch import Elasticsearch
+from elasticsearch.helpers import bulk
+import numpy as np
+import pandas as pd
+import json
+
+df_bilboard = pd.read_csv("test.csv")
+
+LOCAL = False
+
+Bilboard_ES = Elasticsearch(hosts=["localhost" if LOCAL else "elasticsearch"])
+
+
 def generate_data(documents):
     for docu in documents:
         yield {
-            "_index": "nom_du_nouveau_index",
-            "_type": "nom_du_nouveau_index",
+            "_index": "movies",
+            "_type": "movie",
             "_source": {k:v if v else None for k,v in docu.items()},
-        }
+        } 
 
 document = df.fillna("").to_dict(orient="records")
+bulk(Bilboard_ES, generate_data(document))
 
-bulk(es_client, generate_data(document))
+
 
 def search_singer(singer):
     QUERY = {
@@ -17,7 +31,7 @@ def search_singer(singer):
             "artist" : singer.lower()} 
       }
     }
-    result = es_client.search(index="nom_du_nouveau_index", body=QUERY)
+    result = Bilboard_ES.search(index="nom_du_nouveau_index", body=QUERY)
     print(result)
     return [elt['_source']['title'] for elt in result["hits"]["hits"]]
 
@@ -28,7 +42,7 @@ def search_title(title):
             "title" : title.lower()} 
       }
     }
-    result = es_client.search(index="nom_du_nouveau_index", body=QUERY)
+    result = Bilboard_ES.search(index="nom_du_nouveau_index", body=QUERY)
     print(result)
     return [elt['_source']['title'] for elt in result["hits"]["hits"]]
 
@@ -39,6 +53,6 @@ def search_lyrics(lyrics):
             "lyrics" : lyrics.lower()} 
       }
     }
-    result = es_client.search(index="nom_du_nouveau_index", body=QUERY)
+    result = Bilboard_ES.search(index="nom_du_nouveau_index", body=QUERY)
     print(result)
     return [elt['_source']['title'] for elt in result["hits"]["hits"]]
