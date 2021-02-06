@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- <meta charset="UTF-8"> -->
+    <title>Music Search</title>
+  </head>
+
+  <body style="background-color: #c3c5d8">
+
+	<form method="POST" action="/MusicbarLooker">
+	  {{ form.hidden_tag() }}
+	  {{ form.typing.label }} {{ form.typing(size=20) }}
+	  <input type="submit" value="Search">
+	</form>
+
+  </body>
+</html>
