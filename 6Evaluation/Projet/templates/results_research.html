@@ -1,0 +1,33 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>FindYourMusic</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style/style2.css') }}"> 
+	</head>
+	<body>
+		<center>
+			
+		<h1>RESEARCH FOR : {{title[0]}}</h1>
+
+		<h2> Artist : </h2>
+		<table class="table-fill">
+			<tbody class="table-hover">
+				<tr>
+					<td>{{artists[0]}}</td>
+				</tr>
+			</tbody>
+		</table>
+		<p> {{lyrics}} </p>
+
+		<br/>
+		<div class="autre">
+		<a class="recherche" href='/'> Other research ?</a>
+		</div>
+		<br>
+
+		<div class="footer">
+			Théo Guerrois & Adrien Philippe
+		</div>
+		</center>
+  	</body>
+</html>

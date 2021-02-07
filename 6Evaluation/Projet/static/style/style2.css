@@ -1,0 +1,167 @@
+body {
+    background-color: #dcdde1;
+    font-family: 'caviar_dreamsregular';
+  }
+
+.autre{
+    margin-top: 30px;
+}
+
+form{
+    padding-top: 200px;
+}
+
+.footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    background-color: #efefef;
+    text-align: center;
+}
+
+a{
+    color: #22262e;
+    text-decoration: none;
+    opacity: 1 ;
+}
+a:hover{
+    color:#FFFFFF;  
+}
+
+.table-fill {
+    background: white;
+    border-radius:3px;
+    border-collapse: collapse;
+    margin: auto;
+    max-width: 300px;
+    padding:5px;
+    width: 100%;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.329);
+    animation: float 5s infinite;
+}
+
+tr {
+    border-top: 1px solid #C1C3D1;
+    border-bottom: 1px solid #C1C3D1;
+    color:#22262e;
+    font-size:16px;
+    font-weight:normal;
+    text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
+}
+
+tr:hover td {
+    background:#faba0b;
+    color:#FFFFFF;
+    border-top: 1px solid #22262e;
+}
+
+tr:first-child {
+    border-top:none;
+}
+
+tr:last-child {
+    border-bottom:none;
+}
+
+tr:nth-child(odd) td {
+    background:#EBEBEB;
+}
+
+tr:nth-child(odd):hover td {
+    background:#4E5066;
+}
+
+tr:last-child td:first-child {
+    border-bottom-left-radius:3px;
+}
+
+tr:last-child td:last-child {
+    border-bottom-right-radius:3px;
+}
+
+td {
+    background:#FFFFFF;
+    padding:3px;
+    text-align:center;
+    vertical-align:middle;
+    font-weight:300;
+    font-size:18px;
+    text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid #C1C3D1;
+}
+
+td:last-child {
+    border-right: 0px;
+}
+
+p{
+    padding-top: 50px;
+    font-size:18px;
+    color: #22262e;
+}
+
+.recherche{
+    color: #22262e;
+}
+
+.button {
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+  
+.button_Lyrics {
+    background-color: white; 
+    color: #22262e; 
+    border: 2px solid #4CAF50;
+}
+  
+.button_Lyrics:hover {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+.button_Titles {
+    background-color: white; 
+    color: #22262e; 
+    border: 2px solid #008CBA;
+}
+  
+.button_Titles:hover {
+    background-color: #008CBA;
+    color: white;
+}
+  
+.button_Artists {
+    background-color: white; 
+    color: #22262e; 
+    border: 2px solid #FF0000;
+}
+  
+.button_Artists:hover {
+    background-color: #FF0000;
+    color: white;
+}
+
+.button_Random {
+    margin-top: 20px;
+    background-color: white; 
+    color: #22262e; 
+    border: 2px solid #ccc929;
+}
+
+.button_Random:hover {
+    margin-top: 20px;
+    background-color: #ccc929;
+    color: white;
+  }
+  

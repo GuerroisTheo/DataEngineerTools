@@ -1,0 +1,34 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>FindYourMusic</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style/style2.css') }}"> 
+	</head>
+	<body>
+		<center>
+			
+		<h1>RESEARCH FOR : {{title[0]}}</h1>
+
+		<h2>Title list : </h2>
+		{% for i in range(title|length) %}
+		<table class="table-fill">
+			<tbody class="table-hover">
+				<tr>
+					<td><a href="/MusicSearchMusic/{{title[i]}}">{{i+1}}:{{artists[i]}} <br>- {{title[i]}} -<br/></a></td>
+				</tr>
+			</tbody>
+		</table>
+		{% endfor %}
+
+		<br/>
+		<div class="autre">
+		<a class="recherche" href='/'> Other research ?</a>
+		</div>
+		<br>
+
+		<div class="footer">
+			Théo Guerrois & Adrien Philippe
+		</div>
+		</center>
+  	</body>
+</html>

@@ -35,26 +35,46 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 
 LOCAL = False
-Bilboard_ES = Elasticsearch(hosts="http://localhost", port= 9200)
+Bilboard_ES = Elasticsearch(hosts="http://localhost", port=9200)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'you-will-never-guess'
 
 @app.route('/')
-def rien():
-  data = pd.read_csv("lien.csv")
-  documents = data.fillna("").to_dict(orient="records")
-  bulk(Bilboard_ES, generate_data(documents))
+def mainpage():
+    """affiche la page principale"""
+    data = pd.read_csv("lien.csv")
+    documents = data.fillna("").to_dict(orient="records")
+    bulk(Bilboard_ES, generate_data(documents))
+    #   return redirect("/MusicbarLooker")
+    return render_template('mainpage.html')
 
-  return redirect('/MusicbarLooker')
+@app.route('/Random')
+def random():
+    """Permet de faire la fonction random"""
+    data = pd.read_csv("lien.csv")
+    rand = data.sample()['title']
+    print(rand)
+    return redirect("/MusicSearchMusic/"+str(rand))
 
-@app.route('/MusicbarLooker', methods=('GET', 'POST'))
-def MusicSearch():
+@app.route('/MusicbarLooker/<choice>', methods=('GET', 'POST'))
+def MusicSearch(choice):
     """
-    Création de la barre de recherche ainsi que de l'affichage des données, et affichage du bargraph
+    Permet d'acceder aux différents style de recherche
     """
+    choice=choice
+    print(choice)
     form = SearchBar()
     if form.validate_on_submit():
-        return redirect('/MusicSearchSinger/'+form.typing.data)
+        lookfor = re.sub('[^A-Za-z0-9]','_', form.typing.data)
+        if choice == 'lyrics':
+            return redirect('/MusicSearchLyrics/'+lookfor)
+
+        if choice == 'title':
+            return redirect('/MusicSearchTitle/'+lookfor)
+        
+        if choice == 'artist':
+            return redirect('/MusicSearchSinger/'+lookfor)
+
     return render_template('search.html',form=form)
 
 def generate_data(documents):
@@ -68,12 +88,42 @@ def generate_data(documents):
             "_source": {k:v if v else None for k,v in docu.items()},
         }
 
+
 @app.route('/MusicSearchSinger/<search_word>', methods=('GET', 'POST'))       
-def search_singer(singer):
+def search_singer(search_word):
+    """ recherche dans les chanteurs"""
+    artist = re.sub('_',' ', search_word)
     QUERY = {
       "query": {
         "term" : { 
-            "artist" : singer.lower()} 
+            "artist" : artist.lower()} 
+      }
+    }
+
+    result = Bilboard_ES.search(index="artist", body=QUERY)
+    source = result["hits"]["hits"]
+    seen = set()
+    new_source = []
+    for d in source:
+        t = tuple(d["_source"].items())
+        if t not in seen:
+            seen.add(t)
+            new_source.append(d)
+    
+    artist = [elt['_source']['artist'] for elt in new_source]
+    title = [elt['_source']['title'] for elt in new_source]
+    lyrics = [elt['_source']['lyrics'] for elt in new_source]
+
+    return render_template('results_singer.html',title=title,artists=artist,lyrics=lyrics)
+
+@app.route('/MusicSearchMusic/<search_word>', methods=('GET', 'POST'))
+def search_result(search_word):
+    """ affiche les resultats"""
+    title = re.sub('_',' ', search_word)
+    QUERY = {
+      "query": {
+        "match" : { 
+            "title" : title.lower()} 
       }
     }
     result = Bilboard_ES.search(index="artist", body=QUERY)
@@ -90,33 +140,75 @@ def search_singer(singer):
     title = [elt['_source']['title'] for elt in new_source]
     lyrics = [elt['_source']['lyrics'] for elt in new_source]
 
-    return render_template('results.html',title=title,artists=artist)
+    return render_template('results_research.html',title=title,artists=artist,lyrics=lyrics)
 
-@app.route('/MusicSearchTitle', methods=('GET', 'POST'))
-def search_title(title):
-    title_name = str(title).lower() + "~"
-    QUERY = {
-      "query": {
-        "term" : { 
-            "title" : title_name,
-            } 
-      }
-    }
-    result = Bilboard_ES.search(index="lyrics", body=QUERY)
-    return [elt['_source']['title'] for elt in result["hits"]["hits"]]
 
-@app.route('/MusicSearchLyrics', methods=('GET', 'POST'))
-def search_lyrics(lyrics):
-    lyrics_name = str(lyrics).lower() + "~"
+@app.route('/MusicSearchTitle/<search_word>', methods=('GET', 'POST'))
+def search_title(search_word):
+    """Recherche par les titres"""
+    title = re.sub('_','* *', search_word)
     QUERY = {
-      "query": {
-        "term" : { 
-            "lyrics" : lyrics_name,
-            } 
-      }
+        "query": {
+            "query_string" : {
+                "default_field" : "title",
+                'default_operator': "AND",
+                "minimum_should_match":"90%",
+                "query" : "*"+title+"*"
+            }
+        }   
     }
-    result = Bilboard_ES.search(index="lyrics", body=QUERY)
-    return [elt['_source']['title'] for elt in result["hits"]["hits"]]
+    result = Bilboard_ES.search(index="artist", body=QUERY)
+    source = result["hits"]["hits"]
+    seen = set()
+    new_source = []
+    for d in source:
+        t = tuple(d["_source"].items())
+        if t not in seen:
+            seen.add(t)
+            new_source.append(d)
+    
+    artist = [elt['_source']['artist'] for elt in new_source]
+    title = [elt['_source']['title'] for elt in new_source]
+    lyrics = [elt['_source']['lyrics'] for elt in new_source]
+
+    return render_template('results_title.html',title=title,artists=artist,lyrics=lyrics)
+
+@app.route('/MusicSearchLyrics/<search_word>', methods=('GET', 'POST'))
+def search_lyrics(search_word): 
+    """REcherche par les paroles"""
+    lyrics = re.sub('_','* *', search_word)
+    
+    QUERY = {
+        "query": {
+            "query_string" : {
+                "boost" : 5,
+                "default_field" : "lyrics",
+                'default_operator': "AND",
+                "minimum_should_match":"90%",
+                "query" : "*"+lyrics+"*"
+            }
+        }   
+    }
+
+    result = Bilboard_ES.search(index="artist", body=QUERY)
+    source = result["hits"]["hits"]
+    seen = set()
+    new_source = []
+    for d in source:
+        t = tuple(d["_source"].items())
+        if t not in seen:
+            seen.add(t)
+            new_source.append(d)
+    
+    artist = [elt['_source']['artist'] for elt in new_source]
+    title = [elt['_source']['title'] for elt in new_source]
+
+    print("\n\n\n\n")
+    print(artist)
+    print(title)
+    # lyrics = [elt['_source']['lyrics'] for elt in new_source]
+
+    return render_template('results_lyrics.html',title=title,artists=artist,lyrics=lyrics)
 
 if __name__ == '__main__':
     print("Running...")
